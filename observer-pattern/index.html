@@ -7,6 +7,49 @@
     <title>Observer Pattern</title>
   </head>
   <body>
-    <script src="./app.js"></script>
+    <main>
+      <div id="count">0</div>
+      <button id="inc">+</button>
+      <button id="dec">-</button>
+    </main>
+
+    <script defer>
+      function createObservable() {
+        return {
+          observers: [],
+          addObserver(fn) {
+            this.observers.push(fn);
+          },
+          removeObserver(fn) {
+            this.observers = this.observers.filter(item => item !== fn);
+          },
+          notify(data) {
+            for (let i = 0; i < this.observers.length; i++) {
+              this.observers[i](data);
+            }
+          },
+        };
+      }
+
+      const observer = createObservable();
+
+      const callbackFn = count => {
+        document.getElementById('count').innerHTML = count;
+      };
+
+      observer.addObserver(callbackFn);
+
+      document.getElementById('inc').addEventListener('click', () => {
+        observer.notify(
+          parseInt(document.getElementById('count').innerText, 10) + 1
+        );
+      });
+
+      document.getElementById('dec').addEventListener('click', () => {
+        observer.notify(
+          parseInt(document.getElementById('count').innerText, 10) - 1
+        );
+      });
+    </script>
   </body>
 </html>
